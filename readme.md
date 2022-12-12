@@ -10,12 +10,12 @@ pip install git+https://github.com/hirbodprime/coinmarketcap.git
 ```
 
 
-# how to run
-## first create a superuser
+## how to run
+### first create a superuser
 ```   
 python3 manage.py createsuperuser 
 ```  
-## Then run the project
+### Then run the project
 ```
 python3 manage.py runserver
 ```
