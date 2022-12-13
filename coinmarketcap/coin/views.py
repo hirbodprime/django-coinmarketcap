@@ -21,8 +21,8 @@ def JsonDataCoinmarkepcapView(request):
     if content_type == "application/xhtml+xml":
         data = CoinDataModel.objects.all()
         return render(request,"coindata.html" , {"coin":data})
-    # if content_type == "application/json":
-    else:    
+    if content_type == "application/json":
+    # else:    
         data = list(CoinDataModel.objects.values())
         return JsonResponse(data,safe = False)
 
