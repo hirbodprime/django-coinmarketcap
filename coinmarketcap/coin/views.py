@@ -1,6 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.http import HttpResponse , HttpRequest ,JsonResponse
 from coinmarketcapscraper.coinsmarketcap import scraper
 from .models import CoinDataModel
 
@@ -17,9 +16,16 @@ def ScrapeCoinmarkepcapView(req):
         CoinDataModel.objects.create(name=name , symbol=symbol,price=price)
     return HttpResponse("hi")
 
-def JsonDataCoinmarkepcapView(req):
-    data = list(CoinDataModel.objects.values())
-    return JsonResponse(data,safe = False)
+def JsonDataCoinmarkepcapView(request):
+    content_type = request.META.get('HTTP_ACCEPT', request.META.get('CONTENT_TYPE', 'application/your_default'))
+    if content_type == "application/xhtml+xml":
+        data = CoinDataModel.objects.all()
+        return render(request,"coindata.html" , {"coin":data})
+    # if content_type == "application/json":
+    else:    
+        data = list(CoinDataModel.objects.values())
+        return JsonResponse(data,safe = False)
+
 
 def GetCoinData(req,symbol):
     model = list(CoinDataModel.objects.filter(symbol=symbol).values())
