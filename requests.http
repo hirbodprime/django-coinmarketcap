@@ -1,16 +1,28 @@
 # Get CSRF Token
 # @name getToken
 
-POST http://127.0.0.1:8000/coin/data/  HTTP/1.1
+POST http://127.0.0.1:8000/coin/scrape-coins/  HTTP/1.1
 Content-Type: application/json
 
 ###
 
-GET http://127.0.0.1:8000/coin/json-data/ HTTP/1.1
-Content-Type: application/xhtml+xml
+GET http://127.0.0.1:8000/coin/get-coins/ HTTP/1.1
+#Content-Type: application/xhtml+xml
+Content-Type: application/json
+
+###
+
+GET http://127.0.0.1:8000/coin/get-coin/BTC HTTP/1.1
+Content-Type: application/json
+
+
+# ###
+
+# GET http://127.0.0.1:8000/coin/get-logo/BTC HTTP/1.1
 # Content-Type: application/json
 
-###
 
-GET http://127.0.0.1:8000/coin/coin-data/BTC HTTP/1.1
-Content-Type: application/json
+# ###
+
+# GET http://127.0.0.1:8000/coin/download-logo/BTC HTTP/1.1
+# Content-Type: application/json
