@@ -18,7 +18,7 @@ class CoinDataModel(models.Model):
     name = models.CharField(max_length=14 ,unique=True)
     price = models.CharField(max_length=50)
     symbol = models.CharField(max_length=12,unique=True)
-    image = models.ImageField(upload_to=upload_image_path ,null=True,blank=True)
+    image = models.ImageField('img', upload_to='path/' ,null=True,blank=True)
     def __str__(self):
         return self.symbol
 

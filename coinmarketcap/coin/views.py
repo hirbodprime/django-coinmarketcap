@@ -8,31 +8,34 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
 
-def save_image_from_url(req, symbol):
-    get_coin = Scraper(download_all_logos=False , coin_data=True,coin_data_file=False,download_logo_sybmol=symbol)
-    src_symbol = get_coin.download_logo_symbol()
-    coin = CoinDataModel.objects.get(symbol=symbol)
-    logo_url = src_symbol[0]
-    logo_symbol = src_symbol[1]
-    image_content = src_symbol[2]
-    img_temp = NamedTemporaryFile()
-    print(img_temp)
-    img_temp.write(image_content.content)
-    img_temp.flush()
-    if not coin.image:
-        coin.image.save(f"logo-{symbol}.jpg", File(img_temp), save=True)
-    return render(req,"single_coin_logo.html",{"coin":coin})
-
+def get_logo_symbol(request, symbol):
+    try:
+        coin = CoinDataModel.objects.get(symbol=symbol)
+        return render(request,"singlelogo.html" , {"coin":coin})
+    except:
+        # return redirect("getlogo",symbol=symbol)
+        return HttpResponse("please download logo first")
+        
 def download_logo_symbol(req,symbol):
     if CoinDataModel.objects.filter(symbol=symbol):
         get_coin = Scraper(download_all_logos=False , coin_data=True,coin_data_file=False,download_logo_sybmol=symbol)
         src_symbol = get_coin.download_logo_symbol()
+        coin = CoinDataModel.objects.get(symbol=symbol)
         logo_url = src_symbol[0]
         logo_symbol = src_symbol[1]
-
-        return HttpResponse("src_symbol")
+        image_content = src_symbol[2]
+        img_temp = NamedTemporaryFile()
+        img_temp.write(image_content.content)
+        img_temp.flush()
+        if not coin.image:
+            coin.image.save(f"logo-{symbol}.jpg",File(img_temp), save=True)
+        # return redirect("getlogo",symbol=logo_symbol)
+            return HttpResponse("logo downloaded")
+        else:
+            return HttpResponse("logo is already")
     else:
         return HttpResponse("send a bad symbol")
+    # return render(req, "singlelogo.html" , {"coin":coin})
 
 def ScrapeCoinmarkepcapView(req):
     get_coin = Scraper(download_all_logos=False , coin_data=True,coin_data_file=False)
@@ -47,13 +50,14 @@ def ScrapeCoinmarkepcapView(req):
 
 def JsonDataCoinmarkepcapView(request):
     content_type = request.META.get('HTTP_ACCEPT', request.META.get('CONTENT_TYPE', 'application/your_default'))
-    if content_type == "application/xhtml+xml":
-        data = CoinDataModel.objects.all()
-        return render(request,"coindata.html" , {"coin":data})
-    # if content_type == "application/json":
-    else:    
+    if content_type == "application/json":
+    # else:    
         data = list(CoinDataModel.objects.values())
         return JsonResponse(data,safe = False)
+    # if content_type == "application/xhtml+xml":
+    else:    
+        data = CoinDataModel.objects.all()
+        return render(request,"coindata.html" , {"coin":data})
 
 
 def GetCoinData(req,symbol):

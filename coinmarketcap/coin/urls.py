@@ -5,7 +5,8 @@ urlpatterns = [
     path('data/' , v.ScrapeCoinmarkepcapView , name="createdata"),
     path('json-data/' , v.JsonDataCoinmarkepcapView),
     path('coin-data/<str:symbol>' , v.GetCoinData),
-    path('download-logo/<str:symbol>' , v.save_image_from_url),
+    path('download-logo/<str:symbol>' , v.download_logo_symbol),
+    path('get-logo/<str:symbol>' , v.get_logo_symbol , name="getlogo"),
     
     
 ]
