@@ -11,11 +11,13 @@ from django.core.files.temp import NamedTemporaryFile
 def get_logo_symbol(request, symbol):
     try:
         coin = CoinDataModel.objects.get(symbol=symbol)
-        return render(request,"singlelogo.html" , {"coin":coin})
-    except:
-        # return redirect("getlogo",symbol=symbol)
-        return HttpResponse("please download logo first")
-        
+        if coin.image: 
+            return render(request,"singlelogo.html" , {"coin":coin})
+        else:
+            return redirect("dowlogo" , symbol=coin.symbol)
+    except CoinDataModel.DoesNotExist:
+        return HttpResponse("send a bad symbol")
+
 def download_logo_symbol(req,symbol):
     if CoinDataModel.objects.filter(symbol=symbol):
         get_coin = Scraper(download_all_logos=False , coin_data=True,coin_data_file=False,download_logo_sybmol=symbol)
@@ -29,13 +31,9 @@ def download_logo_symbol(req,symbol):
         img_temp.flush()
         if not coin.image:
             coin.image.save(f"logo-{symbol}.jpg",File(img_temp), save=True)
-        # return redirect("getlogo",symbol=logo_symbol)
-            return HttpResponse("logo downloaded")
-        else:
-            return HttpResponse("logo is already")
+        return redirect("getlogo",symbol=logo_symbol)
     else:
         return HttpResponse("send a bad symbol")
-    # return render(req, "singlelogo.html" , {"coin":coin})
 
 def ScrapeCoinmarkepcapView(req):
     get_coin = Scraper(download_all_logos=False , coin_data=True,coin_data_file=False)
