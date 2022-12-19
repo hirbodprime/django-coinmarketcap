@@ -7,11 +7,18 @@
     <title>Document</title>
 </head>
 <body>
-    {% for c in coin%}
-    <p>{{c.name}}</p>
-    <p>{{c.symbol}}</p>
-    <p>{{c.price}}</p>
-    
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+        <p>{{coin.price}}</p>
+        <p>{{coin.name}}</p>
+        <p>{{coin.symbol}}</p>
+    {% for c in coins %}
+        <p>{{c.price}}</p>
+        <p>{{c.name}}</p>
+        <p>{{c.symbol}}</p>
     {% endfor %}
 </body>
 </html>
