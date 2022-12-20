@@ -41,7 +41,7 @@ python3 manage.py runserver
 ```
 ### to see single coin using symbol
 ```
-127.0.0.1:8000/get-coin/<str:symbol>
+127.0.0.1:8000/get-coin/<str:symbol_or_name>
 ```
 ### to see single logo using symbol
 ```
