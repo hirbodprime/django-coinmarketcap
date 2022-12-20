@@ -11,16 +11,16 @@ pip install git+https://github.com/hirbodprime/coinmarketcap.git
 
 
 ## how to run
-### first create a superuser
-```   
-python3 manage.py createsuperuser 
-```  
 
-### Then create the database
+### first create the database
 ### have in mind you don't need to do makemigrations because the files are already in the project
 ```
 python3 manage.py migrate
 ```
+### then create a superuser
+```   
+python3 manage.py createsuperuser 
+```  
 ### Then run the project
 ```
 python3 manage.py runserver
