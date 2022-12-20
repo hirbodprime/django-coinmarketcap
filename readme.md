@@ -25,7 +25,7 @@ python3 manage.py createsuperuser
 ```
 python3 manage.py runserver
 ```
-## in your chrome type
+# How to use
 ### home page 
 ```
 127.0.0.1:8000/ 
