@@ -35,11 +35,11 @@ python3 manage.py runserver
 ```
 127.0.0.1:8000/coin/scrape-coins/ 
 ```
-### to see data as json
+### to see all coins
 ```
 127.0.0.1:8000/coin/get-coins/ 
 ```
-### to see single data using symbol
+### to see single coin using symbol
 ```
 127.0.0.1:8000/get-coin/<str:symbol>
 ```
