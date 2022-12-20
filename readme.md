@@ -39,9 +39,18 @@ python3 manage.py runserver
 ```
 127.0.0.1:8000/coin/get-coins/ 
 ```
-### to see single coin using symbol
+## to see single coin using symbol
+### NOTE: it's case sensetive 
 ```
 127.0.0.1:8000/get-coin/<str:symbol_or_name>
+```
+### correct example
+``` 
+127.0.0.1:8000/get-coin/BTC
+```
+### wrong example
+``` 
+127.0.0.1:8000/get-coin/btc
 ```
 ### to see single logo using symbol
 ```
