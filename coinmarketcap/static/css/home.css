@@ -1,0 +1,15 @@
+.container{
+    text-align: center;
+}
+
+.search input {
+    border-width: 0.9px;
+    border-radius: 100px;
+    width: 500px;
+    height: 27px;
+
+}
+.search input:hover{
+    box-shadow: 0.9px 0.9px 0.9px 0.9px rgb(52, 52, 52);
+
+}
