@@ -15,11 +15,22 @@ pip install git+https://github.com/hirbodprime/coinmarketcap.git
 ```   
 python3 manage.py createsuperuser 
 ```  
+
+### Then create the database
+### have in mind you don't need to do makemigrations because the files are already in the project
+```
+python3 manage.py migrate
+```
 ### Then run the project
 ```
 python3 manage.py runserver
 ```
 ## in your chrome type
+### home page 
+```
+127.0.0.1:8000/ 
+```
+
 ### to scrape coinmarketcap.com 
 ```
 127.0.0.1:8000/coin/scrape-coins/ 
