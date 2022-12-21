@@ -15,18 +15,12 @@
 <dl>
     {% for c in coins %}
     <br>
-    <dt><a href="{% url 'get_single_coin' c.symbol %}"><strong>{{c.name}}</strong></a></dt>
+    <dt><a href="{% url 'get_single_coin' c.symbol %}" target='_blank'><strong>{{c.name}}</strong></a></dt>
         <dd> {{c.price}}</dd>
         <dd>{{c.symbol}}</dd>
     {% endfor %}
 </dl>
 
 
-<form method="POST" action="{% url 'get_coins' %}">
-    {% csrf_token %}
-    {{form.as_p}}
-    {% comment %} <input type="text" name="symbol_or_name"> {% endcomment %}
-    <button type="submit">submit</button>
-</form>
 </body>
 </html>
