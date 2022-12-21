@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles', 
-    'coin' ,
+    'coin' , 'rest_framework'
 ]
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 MIDDLEWARE = [
@@ -39,11 +39,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'coinmarketcap.urls'
-# SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
-#
-# TEMPLATE_DIRS = (
-#     os.path.join(SETTINGS_PATH, 'templates'),
-# )
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
