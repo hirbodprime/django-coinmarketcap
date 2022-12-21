@@ -13,3 +13,24 @@
     box-shadow: 0.9px 0.9px 0.9px 0.9px rgb(52, 52, 52);
 
 }
+
+.color-choice{
+    position:absolute;
+    top:10px;
+    right:10px;
+}
+
+.semi-box {
+    border: 1px none #000;
+    background: rgba(117, 114, 114, 0.25);
+    display: inline-block;
+    width: 370px;
+	margin: auto;
+
+}
+#urls {
+	width: 350px;
+	padding: 10px;
+    opacity: .8;
+
+}
