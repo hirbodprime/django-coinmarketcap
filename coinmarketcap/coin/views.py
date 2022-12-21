@@ -3,12 +3,30 @@ from django.http import HttpResponse , HttpResponseNotFound ,JsonResponse
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.contrib import messages
+from django.views.generic import ListView
+from django.db.models import Q
+from rest_framework.generics import ListAPIView
 from coinmarketcapscraper.coinsmarketcap import Scraper
 from .models import CoinDataModel
+from .serializers import CoinsListApiSerializer
 from home.forms import get_single_coin_form
 import tempfile
 import os
 
+
+class CoinsSearchApiView(ListAPIView):
+    serializer_class = CoinsListApiSerializer    
+    def get_queryset(self):
+        name_or_symbol = self.kwargs['name_or_symbol']
+        return CoinDataModel.objects.filter(
+        Q(name__startswith=name_or_symbol) |
+        Q(symbol__startswith=name_or_symbol)
+    )
+
+
+class CoinsListApiView(ListAPIView):
+    queryset = CoinDataModel.objects.all()
+    serializer_class = CoinsListApiSerializer
 
 def get_logo_symbol_view(request, symbol):
     try:
@@ -22,23 +40,26 @@ def get_logo_symbol_view(request, symbol):
         messages.add_message(request, messages.SUCCESS, 'please use one of these symbols')
         return redirect("scrape_coins")
 
+
 def download_logo_symbol_view(req,symbol):
     try:
-            coin = CoinDataModel.objects.get(symbol=symbol)
-            get_coin = Scraper(download_all_logos=False , coin_data=True,coin_data_file=False,download_logo_sybmol=symbol)
-            src_symbol = get_coin.download_logo_symbol()
-            logo_url = src_symbol[0]
-            logo_symbol = src_symbol[1]
-            image_content = src_symbol[2]
-            img_temp = NamedTemporaryFile()
-            img_temp.write(image_content.content)
-            img_temp.flush()    
-            if not coin.image:
-                coin.image.save(f"logo-{symbol}.jpg",File(img_temp), save=True)
-            return redirect("get_logo",symbol=logo_symbol)
+        coin = CoinDataModel.objects.get(symbol=symbol)
+        get_coin = Scraper(download_all_logos=False , coin_data=True,coin_data_file=False,download_logo_sybmol=symbol)
+        src_symbol = get_coin.download_logo_symbol()
+        logo_url = src_symbol[0]
+        logo_symbol = src_symbol[1]
+        image_content = src_symbol[2]
+        img_temp = NamedTemporaryFile()
+        img_temp.write(image_content.content)
+        img_temp.flush()    
+        if not coin.image:
+            coin.image.save(f"logo-{symbol}.jpg",File(img_temp), save=True)
+        return redirect("get_logo",symbol=logo_symbol)
     except:
         messages.add_message(req, messages.SUCCESS, 'please use one of these symbols')
         return redirect("get_coins")
+
+
 def scrape_coins_view(req):
     try:
         if CoinDataModel.objects.all():
@@ -56,6 +77,7 @@ def scrape_coins_view(req):
         messages.add_message(req, messages.SUCCESS, "coins are already created!")
         return redirect("get_coins")
 
+
 def get_coins_view(request):
     form = get_single_coin_form(request.POST or None)
     if request.method == "GET":
@@ -69,12 +91,15 @@ def get_coins_view(request):
     elif request.method == "POST":
         if form.is_valid():
             symbol_or_name = form.cleaned_data['symbol_or_name']
-            print(symbol_or_name)
-            return redirect("get_single_coin",symbol_or_name=symbol_or_name)
+            coins = CoinDataModel.objects.filter(
+                Q(name__startswith=symbol_or_name) |
+                Q(symbol__startswith=symbol_or_name)
+            )
+            return render(request,"coins.html" , {"coins":coins,'form':form})
+
 
 
 def get_single_coin_view(request,symbol_or_name):
-    
     content_type = request.META.get('HTTP_ACCEPT', request.META.get('CONTENT_TYPE', 'application/your_default'))
     try:
         html_coin = CoinDataModel.objects.get(symbol=symbol_or_name)
