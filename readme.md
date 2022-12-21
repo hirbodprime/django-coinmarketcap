@@ -8,10 +8,7 @@
 ```
 pip install git+https://github.com/hirbodprime/coinmarketcap.git
 ```
-
-
 ## how to run
-
 ### first create the database
 ### have in mind you don't need to do makemigrations because the files are already in the project
 ```
