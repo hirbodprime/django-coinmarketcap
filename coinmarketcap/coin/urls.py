@@ -9,6 +9,7 @@ urlpatterns = [
     path('get-coins/' , v.get_coins_view , name="get_coins"),
     path('get-coin/<str:symbol_or_name>' , v.get_single_coin_view , name="get_single_coin"),
     path('get-logo/<str:symbol>' , v.download_logo_symbol_view,name="dow_logo"),
+    path('get-logos/' , v.download_all_logos,name="dow_logos"),
 
 
 ]

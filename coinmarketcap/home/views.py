@@ -1,8 +1,9 @@
 from django.shortcuts import render , redirect
 from django.http import HttpResponse
 from .forms import get_single_coin_form
-
+import os
 def home(request):
+    print(os.getcwd())
     form = get_single_coin_form(request.POST or None)
     if request.method == "GET":
         return render(request, 'home.html', {'form':form})

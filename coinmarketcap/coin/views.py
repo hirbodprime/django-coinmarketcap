@@ -30,13 +30,30 @@ class CoinsListApiView(ListAPIView):
     queryset = CoinDataModel.objects.all()
     serializer_class = CoinsListApiSerializer
 
+
+def download_all_logos(req):
+    coins =  CoinDataModel.objects.filter(image__exact='')
+    for i in coins:
+        get_coin = Scraper(download_all_logos=False , coin_data=False,coin_data_file=False,download_logo_sybmol=i.symbol)
+        src_symbol = get_coin.download_logo_symbol()
+        logo_symbol = src_symbol[1]
+        image_content = src_symbol[2]
+        img_temp = NamedTemporaryFile()
+        img_temp.write(image_content.content)
+        img_temp.flush()    
+        i.image.save(f"logo-{i.symbol}.jpg",File(img_temp), save=True)
+        img_temp.close()
+    os.chdir('D:\hirbod\webprojects\Django\Projects\coinmarketcap\coinmarketcap')
+    return redirect("get_coins")
+
+
+
 def download_logo_symbol_view(req,symbol):
     if CoinDataModel.objects.get(symbol=symbol):
         coin = CoinDataModel.objects.get(symbol=symbol)
         if not coin.image:
-            get_coin = Scraper(download_all_logos=False , coin_data=True,coin_data_file=False,download_logo_sybmol=symbol)
+            get_coin = Scraper(download_all_logos=False , coin_data=False,coin_data_file=False,download_logo_sybmol=symbol)
             src_symbol = get_coin.download_logo_symbol()
-            logo_url = src_symbol[0]
             logo_symbol = src_symbol[1]
             image_content = src_symbol[2]
             img_temp = NamedTemporaryFile()
@@ -58,8 +75,11 @@ def download_logo_symbol_view(req,symbol):
 
 
 def scrape_coins_view(req):
-    get_coin = Scraper(download_all_logos=False , coin_data=True,coin_data_file=False)
+    coin = CoinDataModel.objects.all()
+    
+    get_coin = Scraper(download_all_logos=True , coin_data=True,coin_data_file=False)
     coin_data = get_coin.get_coin_data()
+    g = get_coin.get_logo()
     for c in range(len(coin_data)):
         name = coin_data[c]['name']
         symbol = coin_data[c]['symbol']
@@ -71,17 +91,21 @@ def scrape_coins_view(req):
 
 
 def get_coins_view(request):
-    if CoinDataModel.objects.all():
-        content_type = request.META.get('HTTP_ACCEPT', request.META.get('CONTENT_TYPE', 'application/your_default'))
-        if content_type == "application/json":
-            coins = list(CoinDataModel.objects.all().values())
-            return JsonResponse(coins,safe = False)
-        else:
-            coins = CoinDataModel.objects.all()
-            return render(request,"coins.html" , {"coins":coins})
+    if CoinDataModel.objects.filter(image__exact=''):
+        return redirect('dow_logos')
     else:
-        CoinDataModel.objects.all().delete()
-        return redirect("scrape_coins")
+        if CoinDataModel.objects.all():
+            content_type = request.META.get('HTTP_ACCEPT', request.META.get('CONTENT_TYPE', 'application/your_default'))
+            if content_type == "application/json":
+                coins = list(CoinDataModel.objects.all().values())
+                return JsonResponse(coins,safe = False)
+            else:
+                coins = CoinDataModel.objects.all()
+                print(os.getcwd())
+                return render(request,"coins.html" , {"coins":coins})
+        else:
+            CoinDataModel.objects.all().delete()
+            return redirect("scrape_coins")
 
 
 
