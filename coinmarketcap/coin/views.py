@@ -33,16 +33,17 @@ class CoinsListApiView(ListAPIView):
 
 def download_all_logos(req):
     coins =  CoinDataModel.objects.filter(image__exact='')
-    for i in coins:
-        get_coin = Scraper(download_all_logos=False , coin_data=False,coin_data_file=False,download_logo_sybmol=i.symbol)
-        src_symbol = get_coin.download_logo_symbol()
-        logo_symbol = src_symbol[1]
-        image_content = src_symbol[2]
-        img_temp = NamedTemporaryFile()
-        img_temp.write(image_content.content)
-        img_temp.flush()    
-        i.image.save(f"logo-{i.symbol}.jpg",File(img_temp), save=True)
-        img_temp.close()
+    if coins:
+        for i in coins:
+            get_coin = Scraper(download_all_logos=False , coin_data=False,coin_data_file=False,download_logo_sybmol=i.symbol)
+            src_symbol = get_coin.download_logo_symbol()
+            logo_symbol = src_symbol[1]
+            image_content = src_symbol[2]
+            img_temp = NamedTemporaryFile()
+            img_temp.write(image_content.content)
+            img_temp.flush()    
+            i.image.save(f"logo-{i.symbol}.jpg",File(img_temp), save=True)
+            img_temp.close()
     os.chdir('D:\hirbod\webprojects\Django\Projects\coinmarketcap\coinmarketcap')
     return redirect("get_coins")
 
@@ -76,7 +77,6 @@ def download_logo_symbol_view(req,symbol):
 
 def scrape_coins_view(req):
     coin = CoinDataModel.objects.all()
-    
     get_coin = Scraper(download_all_logos=True , coin_data=True,coin_data_file=False)
     coin_data = get_coin.get_coin_data()
     g = get_coin.get_logo()
@@ -86,8 +86,9 @@ def scrape_coins_view(req):
         price = coin_data[c]['price']
         CoinDataModel.objects.update_or_create(name=name , symbol=symbol,
         defaults={'price':price})
+    os.chdir('D:\hirbod\webprojects\Django\Projects\coinmarketcap\coinmarketcap')
     messages.add_message(req, messages.SUCCESS, 'coins scraped!')
-    return redirect("get_coins")
+    return redirect("dow_logos")
 
 
 def get_coins_view(request):
@@ -101,7 +102,6 @@ def get_coins_view(request):
                 return JsonResponse(coins,safe = False)
             else:
                 coins = CoinDataModel.objects.all()
-                print(os.getcwd())
                 return render(request,"coins.html" , {"coins":coins})
         else:
             CoinDataModel.objects.all().delete()
