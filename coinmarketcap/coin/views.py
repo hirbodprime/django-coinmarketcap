@@ -44,7 +44,6 @@ def download_all_logos(req):
             img_temp.flush()    
             i.image.save(f"logo-{i.symbol}.jpg",File(img_temp), save=True)
             img_temp.close()
-    os.chdir('D:\hirbod\webprojects\Django\Projects\coinmarketcap\coinmarketcap')
     return redirect("get_coins")
 
 
@@ -86,7 +85,6 @@ def scrape_coins_view(req):
         price = coin_data[c]['price']
         CoinDataModel.objects.update_or_create(name=name , symbol=symbol,
         defaults={'price':price})
-    os.chdir('D:\hirbod\webprojects\Django\Projects\coinmarketcap\coinmarketcap')
     messages.add_message(req, messages.SUCCESS, 'coins scraped!')
     return redirect("dow_logos")
 
